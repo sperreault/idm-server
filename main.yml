@@ -1,46 +1,25 @@
 ---
-- name: enable the RHEL Server repo required for IdM
-  command: subscription-manager repos --enable=rhel-7-server-rpms
+# This play creates a single master at this time.
+# support for replicas will be added.
+#
+- hosts:
+    idm-servers
+  gather_facts: false
+  vars:
+    domainname: org-rh-poc.net
+    realmname: ORG-RH-POC.NET
+    setupdns: true
+    makehomedir: true
+    nodnshost: true
+    sshtrustdns: true
+    autoreversedns: true
+    dnsforwarders:
+    - '8.8.8.8'
+    - '8.8.4.4'
+    dnsforwardonly: true
+    externalca: false
+    externalcacertfile: ''
+    idmserveropts: ''
 
-- name: Install IdM packages
-  yum: 
-    name: ipa-server 
-    state: latest
-
-- name: generating idm install options - home directories
-  set_fact: idmserveropts="--makehomedir"
-  when: makehomedir == true
-
-- name: generating idm install options - host lookup
-  set_fact: idmserveropts="{{ idmserveropts }} --nodnshost"
-  when: nodnshost == true
-
-- name: generating idm install options - ssh options
-  set_fact: idmserveropts="{{ idmserveropts }} --ssh-trust-dns"
-  when: sshtrustdns == true
-
-- name: generating idm install options - dns setup
-  set_fact: idmserveropts="{{ idmserveropts }} --setup-dns"
-  when: setupdns == true
-
-- name: generating idm install options - reverse lookup zones
-  set_fact: idmserveropts="{{ idmserveropts }} --auto-reverse"
-  when: autoreversedns == true
-
-- name: generating idm install options - dns forwarders
-  set_fact: idmserveropts="{{ idmserveropts }} --forwarder={{ item }}"
-  with_items: "{{ dnsforwarders }}"
-
-- name: generating idm install options - dns forwarding policy
-  set_fact: idmserveropts="{{ idmserveropts }} --forward-policy=only"
-  when: dnsforwardonly == true
-
-- name: install idm with the following options...
-  debug:
-    msg: '{{ idmserveropts }}'
-
-#- name: Configure IdM
-#  command: ipa-server-install -U --hostname={{ inventory_hostname }} --domain={{ domainname }} --realm={{ realmname }}  -a {{ idm_admin_password }} -p {{ idm_password }} {{ idmserveropts }}
-
-#- include: add_std_roles.yml
-#- include: add_std_users.yml
+  roles:
+    - idm-server
