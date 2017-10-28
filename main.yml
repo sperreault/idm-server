@@ -6,19 +6,22 @@
     idm-servers
   gather_facts: false
   vars:
-    domainname: org-rh-poc.net
-    realmname: ORG-RH-POC.NET
+    hostname: idm.example.com
+    domainname: example.com
+    realmname: EXAMPLE.COM
     setupdns: true
     makehomedir: true
     nodnshost: true
     sshtrustdns: true
     autoreversedns: true
     dnsforwarders:
+    - '192.168.252.10'
     - '8.8.8.8'
-    - '8.8.4.4'
     dnsforwardonly: true
-    externalca: false
-    externalcacertfile: ''
+    useextrernalcert: false
+    externalcacertfiledestdir: ""
+    externalcacertfilesrc: ""
+    externalcacertfiledest: ""
     idmserveropts: ''
 
   roles:
