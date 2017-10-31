@@ -71,8 +71,8 @@
 - name: Configure IdM
   command: ipa-server-install -U --hostname={{ inventory_hostname }} --domain={{ domainname }} --realm={{ realmname }}  -a {{ idm_admin_password }} -p {{ dirserv_password }} {{ idmserveropts }}
 
-- include: add_std_user_groups.yml
-- include: add_std_users.yml
-- include: add_std_sudo_rules.yml
-- include: add_std_hbac_rules.yml
+- import_tasks: add_std_user_groups.yml
+- import_tasks: add_std_users.yml
+- import_tasks: add_std_sudo_rules.yml
+- import_tasks: add_std_hbac_rules.yml
 
