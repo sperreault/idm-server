@@ -40,7 +40,7 @@
     ipa_user: "admin"
     ipa_pass: "{{ idm_admin_password }}"
   with_items:
-    - { group: "admins", user: "admin"
+    - { group: "admins", user: "admin" }
     - { group: "admins", user: "poc_admin" }
     - { group: "ocpgroup-developer", user: "developer1" }
     - { group: "ocpgroup-developer", user: "developer2" }
