@@ -1,0 +1,34 @@
+---
+# This play creates a single master at this time.
+# support for replicas will be added.
+#
+- hosts:
+    idm-servers
+  gather_facts: false
+  vars:
+    hostname: idm.org-rh-poc.net
+    domainname: org-rh-poc.net
+    realmname: ORG_RH_POC.NET
+    setupdns: true
+    makehomedir: true
+    nodnshost: true
+    sshtrustdns: true
+    autoreversedns: true
+    dnsforwarders:
+    - '192.168.252.10'
+    - '8.8.8.8'
+    dnsforwardonly: true
+    useextrernalcert: false
+    externalcacertfiledestdir: ""
+    externalcacertfilesrc: ""
+    externalcacertfiledest: ""
+    idmserveropts: ''
+
+  tasks:
+  - name: Authenticate with IdM
+    command: echo {{ idm_admin_password }} | kinit admin
+
+  - include_tasks: roles/idm-server/tasks/add_std_user_groups.yml
+  - include_tasks: roles/idm-server/tasks/add_std_users.yml
+  - include_tasks: roles/idm-server/tasks/add_std_sudo_rules.yml
+  - include_tasks: roles/idm-server/tasks/add_std_hbac_rules.yml 

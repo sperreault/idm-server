@@ -3,7 +3,7 @@
 # 
 
 - name: add basic POC admin and developer users
-  command: echo {{ default_password }} | ipa user-add {{ item.login }} --first {{ item.first }} --last {{ item.last }} 
+  command: "echo {{ default_password }} | ipa user-add {{ item.login }} --first {{ item.first }} --last {{ item.last }}"
   with_items:
     - { login: "poc_admin", first: "POC", last: "Admin" }
     - { login: "developer1", first: "Developer", last: "One" }
@@ -16,16 +16,16 @@
   when: additional_users is defined
 
 - name: add basic POC members to groups
-  command: ipa group-add-member {{ item.group }} {{ item.options }}
+  command: ipa group-add-member {{ item.group }} {{ item.flag }}"{{ item.value }}"
   with_items:
-    - { group: "admins", options: "--users='poc_admin'" }
-    - { group: "ocpgroup-developer", options: "--users='developer1'" }
-    - { group: "ocpgroup-developer", options: "--users='developer2'" }
-    - { group: "ocpgroup-developer", options: "--users='developer3'" }
-    - { group: "evmgroup-super_administrator", options: "--groups='admins'" }
-    - { group: "satgroup-administrator", options: "--groups='admins'" }
-    - { group: "towergroup-administrator", options: "--groups='admins'" }
-    - { group: "ocpgroup-cluster_administrator", options: "--groups='admins'" }
+    - { group: "admins", flag: "--users=", value: "poc_admin" }
+    - { group: "ocpgroup-developer", flag: "--users=", value: "developer1" }
+    - { group: "ocpgroup-developer", flag: "--users=", value: "developer2" }
+    - { group: "ocpgroup-developer", flag: "--users=", value: "developer3" }
+    - { group: "evmgroup-super_administrator", flag: "--groups=", value: "admins" }
+    - { group: "satgroup-administrator", flag: "--groups=", value: "admins" }
+    - { group: "towergroup-administrator", flag: "--groups=", value: "admins" }
+    - { group: "ocpgroup-cluster_administrator", flag: "--groups=", value: "admins" }
 
 - name: add any additional users to groups
   command: ipa group-add-member {{ item.group }} {{ item.options }}

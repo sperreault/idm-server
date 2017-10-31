@@ -5,6 +5,9 @@
 # standard user groups for CloudForms
 #
 
+- name: Authenticate with IdM
+  command: echo {{ idm_admin_password }} | kinit admin
+
 - name: Add the standard groups for controlling CloudForms Access
   command: 'ipa group-add {{ item.name }} --desc="{{ item.desc }}"'
   ignore_errors: true
@@ -59,7 +62,7 @@
     - { name: "ocpgroup-developer", desc: "OpenShift Container Platform Developer" }
 
 - name: Add the standard host groups for controlling sudo and HBAC access
-  command: 'ipa hostgroup-add {{ item.name }} --desc={{ item.desc }}'
+  command: 'ipa hostgroup-add {{ item.name }} --desc="{{ item.desc }}"'
   ignore_errors: true
   with_items:
     - { name: "ocp-servers", desc: "OpenShift Container Platform Servers" }
