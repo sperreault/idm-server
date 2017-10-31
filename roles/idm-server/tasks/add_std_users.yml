@@ -11,7 +11,7 @@
     state: present
     ipa_host: "{{ hostname }}"
     ipa_user: "admin"
-    ipa_password: "{{ idm_admin_password }}"
+    ipa_pass: "{{ idm_admin_password }}"
   with_items:
     - { login: "poc_admin", first: "POC", last: "Admin" }
     - { login: "developer1", first: "Developer", last: "One" }
@@ -27,7 +27,7 @@
     state: present
     ipa_host: "{{ hostname }}"
     ipa_user: "admin"
-    ipa_password: "{{ idm_admin_password }}"
+    ipa_pass: "{{ idm_admin_password }}"
   with_items: "{{ additional_users }}"
   when: additional_users is defined
 
@@ -38,7 +38,7 @@
     state: present
     ipa_host: "{{ hostname }}"
     ipa_user: "admin"
-    ipa_password: "{{ idm_admin_password }}"
+    ipa_pass: "{{ idm_admin_password }}"
   with_items:
     - { group: "admins", user: "poc_admin" }
     - { group: "ocpgroup-developer", user: "developer1" }
@@ -52,7 +52,7 @@
     state: present
     ipa_host: "{{ hostname }}"
     ipa_user: "admin"
-    ipa_password: "{{ idm_admin_password }}"
+    ipa_pass: "{{ idm_admin_password }}"
   with_items:
     - { group: "evmgroup-super_administrator", value: "admins" }
     - { group: "satgroup-administrator", value: "admins" }
@@ -66,7 +66,7 @@
     state: present
     ipa_host: "{{ hostname }}"
     ipa_user: "admin"
-    ipa_password: "{{ idm_admin_password }}"
+    ipa_pass: "{{ idm_admin_password }}"
   with_items: "{{ additional_users }}"
   when: additional_users is defined
 
