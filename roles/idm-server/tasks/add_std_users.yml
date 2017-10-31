@@ -3,7 +3,15 @@
 # 
 
 - name: add basic POC admin and developer users
-  command: "echo {{ default_password }} | ipa user-add {{ item.login }} --first {{ item.first }} --last {{ item.last }}"
+  ipa_user:
+    name: "{{ item.login }}"
+    givenname: "{{ item.first }}"
+    sn: "{{ item.last }}"
+    password: "{{ default_password }}"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_password: "{{ idm_admin_password }}"
   with_items:
     - { login: "poc_admin", first: "POC", last: "Admin" }
     - { login: "developer1", first: "Developer", last: "One" }
@@ -11,27 +19,55 @@
     - { login: "developer3", first: "Developer", last: "Three" }
 
 - name: add any additional users required
-  command: echo {{ default_password }} | ipa user-add {{ item.login }} --first {{ item.first }} --last {{ item.last }}
+  ipa_user:
+    name: "{{ item.login }}"
+    givenname: "{{ item.first }}"
+    sn: "{{ item.last }}"
+    password: "{{ default_password }}"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_password: "{{ idm_admin_password }}"
   with_items: "{{ additional_users }}"
   when: additional_users is defined
 
 - name: add basic POC members to groups
-  command: ipa group-add-member {{ item.group }} {{ item.flag }}"{{ item.value }}"
+  ipa_group:
+    name: "{{ item.group }}"
+    user: "{{ item.user }}"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_password: "{{ idm_admin_password }}"
   with_items:
-    - { group: "admins", flag: "--users=", value: "poc_admin" }
-    - { group: "ocpgroup-developer", flag: "--users=", value: "developer1" }
-    - { group: "ocpgroup-developer", flag: "--users=", value: "developer2" }
-    - { group: "ocpgroup-developer", flag: "--users=", value: "developer3" }
-    - { group: "evmgroup-super_administrator", flag: "--groups=", value: "admins" }
-    - { group: "satgroup-administrator", flag: "--groups=", value: "admins" }
-    - { group: "towergroup-administrator", flag: "--groups=", value: "admins" }
-    - { group: "ocpgroup-cluster_administrator", flag: "--groups=", value: "admins" }
+    - { group: "admins", user: "poc_admin" }
+    - { group: "ocpgroup-developer", user: "developer1" }
+    - { group: "ocpgroup-developer", user: "developer2" }
+    - { group: "ocpgroup-developer", user: "developer3" }
+
+- name: add basic POC groups to groups
+  ipa_group:
+    name: "{{ item.group }}"
+    group: "{{ item.value }}"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_password: "{{ idm_admin_password }}"
+  with_items:
+    - { group: "evmgroup-super_administrator", value: "admins" }
+    - { group: "satgroup-administrator", value: "admins" }
+    - { group: "towergroup-administrator", value: "admins" }
+    - { group: "ocpgroup-cluster_administrator", value: "admins" }
 
 - name: add any additional users to groups
-  command: ipa group-add-member {{ item.group }} {{ item.options }}
-  with_subelements: 
-    - "{{ additional_users }}"
-    - groups
+  ipa_group:
+    name: "{{ item.group }}"
+    user: "{{ item.user }}"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_password: "{{ idm_admin_password }}"
+  with_items: "{{ additional_users }}"
   when: additional_users is defined
 
 

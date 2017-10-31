@@ -28,6 +28,7 @@
   - name: Authenticate with IdM
     command: echo {{ idm_admin_password }} | kinit admin
 
+  - include_tasks: roles/idm-server/tasks/idm_firewall.yml
   - include_tasks: roles/idm-server/tasks/add_std_user_groups.yml
   - include_tasks: roles/idm-server/tasks/add_std_users.yml
   - include_tasks: roles/idm-server/tasks/add_std_sudo_rules.yml
