@@ -15,6 +15,5 @@
   command: ipa hbacrule-add-host ocp-poc-users --hostgroup=util-servers
 
 - name: Add the developers to the hbac rule
-  command: ipa hbacrule-add-user ocp-masters --group=ocpgroup-developer
-
+  command: ipa hbacrule-add-user ocp-poc-users --group=ocpgroup-developer
 

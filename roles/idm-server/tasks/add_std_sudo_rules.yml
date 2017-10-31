@@ -3,37 +3,65 @@
 # We will only give sudo capability to admins for now
 # We will manage developer access to systems using HBAC
 #
+
+- name: Determine if the rule already exists
+  command: ipa sudorule-find ocpadmin 
+  register: res
+  ignore_errors: yes
+
+- set_fact: 
+    rule_exists: true
+  when: res.stdout|search("ocpadmin")
  
 - name: Add the ocp-admin sudo rule
   command: ipa sudorule-add ocpadmin --desc='Control sudo access on OCP Servers' --cmdcat='all' --runasusercat='all'
+  when: rule_exists == false
 
 - name: Add ocp admins to the sudo rule
   command: ipa sudorule-add-user ocpadmin --groups='ocpgroup-cluster_administrator'
+  when: rule_exists == false
 
 - name: Add ocp operators to the sudo rule
   command: ipa sudorule-add-user ocpadmin --groups='ocpgroup-operator'
+  when: rule_exists == false
 
 - name: Add ocp hostgroup to the sudo rule
   command: ipa sudorule-add-host ocpadmin --hostgroups='ocp-servers'
+  when: rule_exists == false
 
 - name: Add options
   command: ipa sudorule-add-option ocpadmin --sudooption='!authenticate'
+  when: rule_exists == false
 
 - name: Add options
   command: ipa sudorule-add-option ocpadmin --sudooption='!requiretty'
+  when: rule_exists == false
 
+- set_fact: 
+    rule_exists: false
+
+- name: Determine if the rule already exists
+  command: ipa sudorule-find realm-admin 
+  register: res
+  ignore_errors: yes
+
+- set_fact: 
+    rule_exists: true
+  when: res.stdout|search("realm-admin")
 
 - name: Add the realm-admin sudo rule
-  command: ipa sudorule-add ocpadmin --desc='Control sudo access on all servers for admins' --cmdcat='all' --hostcat='all' --runasusercat='all'
+  command: ipa sudorule-add realm-admin --desc='Control sudo access on all servers for admins' --cmdcat='all' --hostcat='all' --runasusercat='all'
+  when: rule_exists == false
 
 - name: Add ocp admins to the sudo rule
-  command: ipa sudorule-add-user ocpadmin --groups='admins'
+  command: ipa sudorule-add-user realm-admin --groups='admins'
+  when: rule_exists == false
 
 - name: Add options
-  command: ipa sudorule-add-option ocpadmin --sudooption='!authenticate'
+  command: ipa sudorule-add-option realm-admin --sudooption='!authenticate'
+  when: rule_exists == false
 
 - name: Add options
-  command: ipa sudorule-add-option ocpadmin --sudooption='!requiretty'
-
-
+  command: ipa sudorule-add-option realm-admin --sudooption='!requiretty'
+  when: rule_exists == false
 
