@@ -1,0 +1,39 @@
+---
+# Add standard sudo rules for the POC
+# We will only give sudo capability to admins for now
+# We will manage developer access to systems using HBAC
+#
+ 
+- name: Add the ocp-admin sudo rule
+  command: ipa sudorule-add ocpadmin --desc='Control sudo access on OCP Servers' --cmdcat='all' --runasusercat='all'
+
+- name: Add ocp admins to the sudo rule
+  command: ipa sudorule-add-user ocpadmin --groups='ocpgroup-cluster_administrator'
+
+- name: Add ocp operators to the sudo rule
+  command: ipa sudorule-add-user ocpadmin --groups='ocpgroup-operator'
+
+- name: Add ocp hostgroup to the sudo rule
+  command: ipa sudorule-add-host ocpadmin --hostgroups='ocp-servers'
+
+- name: Add options
+  command: ipa sudorule-add-option ocpadmin --sudooption='!authenticate'
+
+- name: Add options
+  command: ipa sudorule-add-option ocpadmin --sudooption='!requiretty'
+
+
+- name: Add the realm-admin sudo rule
+  command: ipa sudorule-add ocpadmin --desc='Control sudo access on all servers for admins' --cmdcat='all' --hostcat='all' --runasusercat='all'
+
+- name: Add ocp admins to the sudo rule
+  command: ipa sudorule-add-user ocpadmin --groups='admins'
+
+- name: Add options
+  command: ipa sudorule-add-option ocpadmin --sudooption='!authenticate'
+
+- name: Add options
+  command: ipa sudorule-add-option ocpadmin --sudooption='!requiretty'
+
+
+

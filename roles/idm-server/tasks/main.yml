@@ -74,5 +74,5 @@
 - include: add_std_user_groups.yml
 - include: add_std_users.yml
 - include: add_std_sudo_rules.yml
-- include: add_std_host_groups.yml
+- include: add_std_hbac_rules.yml
 

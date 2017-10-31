@@ -1,0 +1,37 @@
+---
+# add standard users in a POC
+# 
+
+- name: add basic POC admin and developer users
+  command: echo {{ default_password }} | ipa user-add {{ item.login }} --first {{ item.first }} --last {{ item.last }} 
+  with_items:
+    - { login: "poc_admin", first: "POC", last: "Admin" }
+    - { login: "developer1", first: "Developer", last: "One" }
+    - { login: "developer2", first: "Developer", last: "Two" }
+    - { login: "developer3", first: "Developer", last: "Three" }
+
+- name: add any additional users required
+  command: echo {{ default_password }} | ipa user-add {{ item.login }} --first {{ item.first }} --last {{ item.last }}
+  with_items: "{{ additional_users }}"
+  when: additional_users is defined
+
+- name: add basic POC members to groups
+  command: ipa group-add-member {{ item.group }} {{ item.options }}
+  with_items:
+    - { group: "admins", options: "--users='poc_admin'" }
+    - { group: "ocpgroup-developer", options: "--users='developer1'" }
+    - { group: "ocpgroup-developer", options: "--users='developer2'" }
+    - { group: "ocpgroup-developer", options: "--users='developer3'" }
+    - { group: "evmgroup-super_administrator", options: "--groups='admins'" }
+    - { group: "satgroup-administrator", options: "--groups='admins'" }
+    - { group: "towergroup-administrator", options: "--groups='admins'" }
+    - { group: "ocpgroup-cluster_administrator", options: "--groups='admins'" }
+
+- name: add any additional users to groups
+  command: ipa group-add-member {{ item.group }} {{ item.options }}
+  with_subelements: 
+    - "{{ additional_users }}"
+    - groups
+  when: additional_users is defined
+
+

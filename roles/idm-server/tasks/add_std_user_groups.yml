@@ -8,7 +8,7 @@
 - name: Add the standard groups for controlling CloudForms Access
   command: 'ipa group-add {{ item.name }} --desc="{{ item.desc }}"'
   ignore_errors: true
-  with items:
+  with_items:
     - { name: "evmgroup-administrator", desc: "CloudForms Server Administrators" }
     - { name: "evmgroup-approver", desc: "CloudForms Service Approvers" } 
     - { name: "evmgroup-auditor", desc: "CloudForms Systems Auditors" }
@@ -26,7 +26,7 @@
 - name: Add the standard groups for controlling Satellite Access
   command: 'ipa group-add {{ item.name }} --desc="{{ item.desc }}"'
   ignore_errors: true
-  with items:
+  with_items:
     - { name: "satgroup-administrator", desc: "Satellite Server Administrators" }
     - { name: "satgroup-auditor", desc: "Satellite Systems Auditors" }
     - { name: "satgroup-operator", desc: "Satellite Server Operators" }
@@ -37,7 +37,7 @@
 - name: Add the standard groups for controlling Ansible Tower Access
   command: 'ipa group-add {{ item.name }} --desc="{{ item.desc }}"'
   ignore_errors: true
-  with items:
+  with_items:
     - { name: "towergroup-administrator", desc: "Ansible Tower Administrators" }
     - { name: "towergroup-auditor", desc: "Ansible Tower Auditors" }
     - { name: "towergroup-operator", desc: "Ansible Tower Server Operators" }
@@ -47,13 +47,26 @@
     - { name: "towergroup-workflow_manager", desc: "Ansible Tower Workflow Manager" }
     - { name: "towergroup-user", desc: "Ansible Tower User - can run basic Templates and Workflows" }
 
- - name: Add the standard grops for controlling OpenShift Container Platform Access
-   command: 'ipa group-add {{ item.name }} --desc="{{ item.desc }}"'
-   ignore_errors: true
-   with items:
+- name: Add the standard groups for controlling OpenShift Container Platform Access
+  command: 'ipa group-add {{ item.name }} --desc="{{ item.desc }}"'
+  ignore_errors: true
+  with_items:
     - { name: "ocpgroup-cluster_administrator", desc: "OpenShift Container Platform Cluster Administrators" }
     - { name: "ocpgroup-auditor", desc: "OpenShift Container Container Auditors" }
     - { name: "ocpgroup-operator", desc: "OpenShift Container Platform Cluster Operators" }
     - { name: "ocpgroup-support", desc: "OpenShift Container Platform Systems Maintenance Operators" }
     - { name: "ocpgroup-proj_administrator", desc: "OpenShift Container Platform Project Administrator" }
     - { name: "ocpgroup-developer", desc: "OpenShift Container Platform Developer" }
+
+- name: Add the standard host groups for controlling sudo and HBAC access
+  command: 'ipa hostgroup-add {{ item.name }} --desc={{ item.desc }}'
+  ignore_errors: true
+  with_items:
+    - { name: "ocp-servers", desc: "OpenShift Container Platform Servers" }
+    - { name: "ocp-masters", desc: "OpenShift Container Platform Master Servers" }
+    - { name: "cf-servers", desc: "CloudForms Management Platform Servers" }
+    - { name: "sat-servers", desc: "Satellite Servers and Capsules" }
+    - { name: "awx-servers", desc: "Ansible Tower Servers" }
+    - { name: "util-servers", desc: "Utility Servers for General Purpose work" }
+
+

@@ -1,0 +1,20 @@
+---
+# Restrict developers to logging in to only the jump server and the ocpmaster servers
+#
+
+- name: Disable the allow_all rule
+  command: ipa hbacrule-disable allow_all
+
+- name: Create an OCP POC users HBAC rule
+  command: ipa hbacrule-add ocp-poc-users --desc="Restrict access to ocpmasters"
+
+- name: Add the OCP Masters hostgroup to the rule
+  command: ipa hbacrule-add-host ocp-poc-users --hostgroup=ocp-masters
+
+- name: Add the utility servers hostgroup to the rule
+  command: ipa hbacrule-add-host ocp-poc-users --hostgroup=util-servers
+
+- name: Add the developers to the hbac rule
+  command: ipa hbacrule-add-user ocp-masters --group=ocpgroup-developer
+
+

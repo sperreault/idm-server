@@ -6,9 +6,9 @@
     idm-servers
   gather_facts: false
   vars:
-    hostname: idm.example.com
-    domainname: example.com
-    realmname: EXAMPLE.COM
+    hostname: idm.org-rh-poc.net
+    domainname: org-rh-poc.net
+    realmname: ORG_RH_POC.NET
     setupdns: true
     makehomedir: true
     nodnshost: true
