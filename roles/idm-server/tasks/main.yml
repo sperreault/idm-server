@@ -14,6 +14,12 @@
     name: ipa-server 
     state: latest
 
+- name: Install IdM DNS packages
+  yum:
+    name: ipa-server-dns
+    state: latest
+  when: setupdns == true
+
 - name: generating idm install options - home directories
   set_fact: idmserveropts="--mkhomedir"
   when: makehomedir == true
