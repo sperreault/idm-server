@@ -9,6 +9,11 @@ Currently only the IdM Server build is implemented.
 ## Requirements
 When running the adds_only play, ensure that the user set for ansible_user has HBAC and sudo access to the IdM server. Currently, the ansible_user set in adds_only is admin@REALM.COM. This allows several configuration tasks to run on the idm server with the proper permissions after installation. If you are running the adds_only playbook, edit the vars section to reflect your login, domain and REALM. Also, idm_admin_password and default_password are expected on the command-line as environment variables.  
 
+## Assumptions
+1. Your system is properly registered or configured for updates and installation
+2. You have access to rhel-7-server-rpms (otherwise please edit for non RHEL platforms)
+3. You have access to rhel-7-server-extras-rpms (otherwise please edit for non RHEL platforms)
+
 ## Suggested use
 
 1. Build an @base Red Hat Enterprise Linux 7 system. 
@@ -16,11 +21,12 @@ When running the adds_only play, ensure that the user set for ansible_user has H
    - Enable the rhel-7-server-extras-rpms repo
    - Install ansible and git
 3. Clone this repo to the server with ansible on it
-4. Edit the hosts file to include your host
-5. Edit the main.yml, adds_only.yml file to configure your variables. (Or set them in tower)
-6. Run the playbook.
+4. Edit the ansible hosts file in the cloned directory to include your host
+5. Edit /etc/hosts to have the IP and FQDN of the host you are installing 
+6. Edit the main.yml, adds_only.yml file to configure your variables. (Or set them in tower)
+7. Run the playbook.
    - ansible-playbook -i hosts -e idm_admin_password=2017POCOcelotRandomHouseholdMoonbeam -e dirserv_password=2017POCOcelotRandomHouseholdMoonbeam -e default_password=2017POCOcelotRandomHouseholdMoonbeam main.yml
-7. Enjoy!
+8. Enjoy!
 
 
 ## What does it do?
