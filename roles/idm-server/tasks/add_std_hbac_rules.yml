@@ -48,9 +48,7 @@
     usergroup:
     - ocpgroup-operator
     - ocpgroup-cluster_administrator
----  
-# Create basic HBAC Rules for the POC Environment
-#
+
 - name: Create a Sat Operators HBAC rule
   ipa_hbacrule:
     name: sat-operators
