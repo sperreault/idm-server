@@ -65,7 +65,7 @@
     ipa_host: "{{ hostname }}"
     ipa_user: "admin"
     ipa_pass: "{{ idm_admin_password }}"
-  with_items: "{{ additional_users }}"
-  when: additional_users is defined
+  with_items: "{{ additional_group_users }}"
+  when: additional_group_users is defined
 
 

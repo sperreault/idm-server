@@ -77,6 +77,9 @@
 - name: Configure IdM
   command: ipa-server-install -U --hostname={{ inventory_hostname }} --domain={{ domainname }} --realm={{ realmname }}  -a {{ idm_admin_password }} -p {{ dirserv_password }} {{ idmserveropts }}
 
+- name: Authenticate with IdM
+  command: echo {{ idm_admin_password }} | kinit admin
+
 - import_tasks: idm_firewall.yml
 - import_tasks: add_std_user_groups.yml
 - import_tasks: add_std_users.yml

@@ -1,2 +1,2 @@
-[idm-servers]
-idm.org-rh-poc.net
+[ansible-engine-host]
+localhost

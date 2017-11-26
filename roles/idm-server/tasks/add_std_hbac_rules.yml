@@ -2,18 +2,105 @@
 # Restrict developers to logging in to only the jump server and the ocpmaster servers
 #
 
-- name: Disable the allow_all rule
-  command: ipa hbacrule-disable allow_all
+- name: Create the admin_allow_all rule for Realm and Satellite Administrators
+  ipa_hbacrule:
+    name: admin_allow_all
+    description: "Realm Admin accesses all hosts"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    hostcategory: all
+    servicecategory: all
+    usergroup: 
+    - admins
+    - satgroup-administrator
 
 - name: Create an OCP POC users HBAC rule
-  command: ipa hbacrule-add ocp-poc-users --desc="Restrict access to ocpmasters"
+  ipa_hbacrule:
+    name: ocp-poc-users
+    description: "Restrict access to ocpmasters"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    hostgroup:
+    - ocp-masters
+    - util-servers
+    servicecategory: all
+    usergroup:
+    - ocpgroup-developer
+    - ocpgroup-proj_administrator
 
-- name: Add the OCP Masters hostgroup to the rule
-  command: ipa hbacrule-add-host ocp-poc-users --hostgroup=ocp-masters
+- name: Create an OCP Admins HBAC rule
+  ipa_hbacrule:
+    name: ocp-admins
+    description: "OCP Admins can access to ocp masters, nodes, routers, load balancers and utility servers"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    hostgroup:
+    - ocp-masters
+    - ocp-servers
+    - util-servers
+    servicecategory: all
+    usergroup:
+    - ocpgroup-operator
+    - ocpgroup-cluster_administrator
+---  
+# Create basic HBAC Rules for the POC Environment
+#
+- name: Create a Sat Operators HBAC rule
+  ipa_hbacrule:
+    name: sat-operators
+    description: "Satellite Operators can access the Satellite and Capsule Servers"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    hostgroup:
+    - sat-servers
+    servicecategory: all
+    usergroup:
+    - satgroup-operators
 
-- name: Add the utility servers hostgroup to the rule
-  command: ipa hbacrule-add-host ocp-poc-users --hostgroup=util-servers
+- name: Create a CFME Operators HBAC rule
+  ipa_hbacrule:
+    name: cfme-operators
+    description: "Satellite Operators can access the Satellite and Capsule Servers"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    hostgroup:
+    - cfme-servers
+    servicecategory: all
+    usergroup:
+    - evmgroup-super_administrator
+    - evmgroup-administrator
+    - evmgroup-operator
 
-- name: Add the developers to the hbac rule
-  command: ipa hbacrule-add-user ocp-poc-users --group=ocpgroup-developer
+- name: Create a AWX Operators HBAC rule
+  ipa_hbacrule:
+    name: cfme-operators
+    description: "Satellite Operators can access the Satellite and Capsule Servers"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    hostgroup:
+    - awx-servers
+    servicecategory: all
+    usergroup:
+    - towergroup-administrator
+    - towergroup-operator
+
+- name: Disable the allow_all rule
+  ipa_hbacrule:
+    name: allow_all
+    state: disabled
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
 

@@ -4,64 +4,82 @@
 # We will manage developer access to systems using HBAC
 #
 
-- name: Determine if the rule already exists
-  command: ipa sudorule-find ocpadmin 
-  register: res
-  ignore_errors: yes
-
-- set_fact: 
-    rule_exists: true
-  when: res.stdout|search("ocpadmin")
- 
-- name: Add the ocp-admin sudo rule
-  command: ipa sudorule-add ocpadmin --desc='Control sudo access on OCP Servers' --cmdcat='all' --runasusercat='all'
-  when: rule_exists == false
-
-- name: Add ocp admins to the sudo rule
-  command: ipa sudorule-add-user ocpadmin --groups='ocpgroup-cluster_administrator'
-  when: rule_exists == false
-
-- name: Add ocp operators to the sudo rule
-  command: ipa sudorule-add-user ocpadmin --groups='ocpgroup-operator'
-  when: rule_exists == false
-
-- name: Add ocp hostgroup to the sudo rule
-  command: ipa sudorule-add-host ocpadmin --hostgroups='ocp-servers'
-  when: rule_exists == false
-
-- name: Add options
-  command: ipa sudorule-add-option ocpadmin --sudooption='!authenticate'
-  when: rule_exists == false
-
-- name: Add options
-  command: ipa sudorule-add-option ocpadmin --sudooption='!requiretty'
-  when: rule_exists == false
-
-- set_fact: 
-    rule_exists: false
-
-- name: Determine if the rule already exists
-  command: ipa sudorule-find realm-admin 
-  register: res
-  ignore_errors: yes
-
-- set_fact: 
-    rule_exists: true
-  when: res.stdout|search("realm-admin")
-
 - name: Add the realm-admin sudo rule
-  command: ipa sudorule-add realm-admin --desc='Control sudo access on all servers for admins' --cmdcat='all' --hostcat='all' --runasusercat='all'
-  when: rule_exists == false
+  ipa_sudorule:
+    name: "realm-admin"
+    description: "Control sudo access on all servers for admins"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    cmdcategory: all
+    hostcategory: all
+    usergroup:
+    - admins
+ 
 
-- name: Add ocp admins to the sudo rule
-  command: ipa sudorule-add-user realm-admin --groups='admins'
-  when: rule_exists == false
+- name: Add the sat-admin sudo rule
+  ipa_sudorule:
+    name: "sat-admin"
+    description: "Control sudo access on Satellite Servers and Capsules"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    cmdcategory: all
+    hostgroup:
+    - sat-servers
+    usergroup:
+    - satgroup-administrator
+    - satgroup-org-administrator
+    - satgroup-site-administrator
+    - satgroup-operator
 
-- name: Add options
-  command: ipa sudorule-add-option realm-admin --sudooption='!authenticate'
-  when: rule_exists == false
 
-- name: Add options
-  command: ipa sudorule-add-option realm-admin --sudooption='!requiretty'
-  when: rule_exists == false
+- name: Add the ocp-admin sudo rule
+  ipa_sudorule:
+    name: "ocp-admin"
+    description: "Control sudo access on OCP Servers"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    cmdcategory: all
+    hostgroup:
+    - ocp-servers
+    usergroup:
+    - ocpgroup-cluster_administrator
+    - ocpgroup-operator
+
+
+- name: Add the cfme-admin sudo rule
+  ipa_sudorule:
+    name: "cfme-admin"
+    description: "Control sudo access on CloudForms Servers"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    cmdcategory: all
+    hostgroup:
+    - cfme-servers
+    usergroup:
+    - evmgroup-super_administrator
+    - evmgroup-administrator
+    - evmgroup-operator
+
+- name: Add the awx-admin sudo rule
+  ipa_sudorule:
+    name: "awx-admin"
+    description: "Control sudo access on Ansible Tower Servers"
+    state: present
+    ipa_host: "{{ hostname }}"
+    ipa_user: "admin"
+    ipa_pass: "{{ idm_admin_password }}"
+    cmdcategory: all
+    hostgroup:
+    - awx-servers
+    usergroup:
+    - towergroup-administrator
+    - towergroup-operator
 
