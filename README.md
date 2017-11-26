@@ -13,12 +13,13 @@ When running the adds_only play, ensure that the user set for ansible_user has H
 
 1. Build an @base Red Hat Enterprise Linux 7 system. 
 2. If you are going to run directly from the IdM server
-   a) Enable the rhel-7-server-extras-rpms repo
-   b) Install ansible and git
+   - Enable the rhel-7-server-extras-rpms repo
+   - Install ansible and git
 3. Clone this repo to the server with ansible on it
 4. Edit the hosts file to include your host
 5. Edit the main.yml, adds_only.yml file to configure your variables. (Or set them in tower)
 6. Run the playbook.
+   - ansible-playbook -i hosts -e idm_admin_password=2017POCOcelotRandomHouseholdMoonbeam -e dirserv_password=2017POCOcelotRandomHouseholdMoonbeam -e default_password=2017POCOcelotRandomHouseholdMoonbeam main.yml
 7. Enjoy!
 
 
