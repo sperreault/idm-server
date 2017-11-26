@@ -26,6 +26,9 @@
     state: latest
   when: setupdns == true
 
+- name: uninstall IdM server if it already exists - this is destructive.
+  command: ipa-server-install --uninstall --unattended
+
 - name: generating idm install options - home directories
   set_fact: idmserveropts="--mkhomedir"
   when: makehomedir == true
