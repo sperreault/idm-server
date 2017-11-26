@@ -9,6 +9,12 @@
 - name: enable the RHEL Server repo required for IdM
   command: subscription-manager repos --enable=rhel-7-server-rpms
 
+# this ensures we have the latest firewalld to pick up our services definitions
+- name: Update the system... this may take a while...
+  yum:
+    name: '*'
+    state: latest
+
 - name: Install IdM packages
   yum: 
     name: ipa-server 
@@ -74,7 +80,7 @@
   debug:
     msg: '{{ idmserveropts }}'
 
-- name: Configure IdM
+- name: Configure IdM - this takes about 10 minutes - coffee time...
   command: ipa-server-install -U --hostname={{ inventory_hostname }} --domain={{ domainname }} --realm={{ realmname }}  -a {{ idm_admin_password }} -p {{ dirserv_password }} {{ idmserveropts }}
 
 - import_tasks: idm_firewall.yml
